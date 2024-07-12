@@ -35,9 +35,6 @@ const TableView = () => {
     const clearFilter = () => {
         setNameSearch('')
         setCountrySearch('')
-        // setOpenModal(false)
-        // refetchData()
-        // setIsRefetch(true)
     }
 
     const applyFilter = () => {

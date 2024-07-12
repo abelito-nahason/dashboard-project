@@ -1,10 +1,24 @@
 import { Route, Routes } from "react-router-dom";
 import Topbar from "./pages/global/Topbar";
 import { ColorModeContext, useMode } from "./theme";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import {CssBaseline, ThemeProvider} from "@mui/material";
 import TableView from "./pages/table";
 import Sidebar from "./pages/global/Sidebar";
 import { QueryClient, QueryClientProvider } from "react-query";
+import Login from "./pages/auth/login";
+
+
+const Application = () => (
+  <div className="app">
+    <Sidebar/>
+    <main className="content">
+      <Topbar/>
+      <Routes>
+          <Route path="/" element={<TableView/>}></Route>
+      </Routes>
+    </main>
+  </div>
+)
 
 function App() {
 
@@ -16,15 +30,7 @@ function App() {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
         <CssBaseline/>
-        <div className="app">
-          <Sidebar/>
-          <main className="content">
-            <Topbar/>
-            <Routes>
-                <Route path="/" element={<TableView/>}></Route>
-            </Routes>
-          </main>
-        </div>
+          <Login/>
         </ThemeProvider>
       </ColorModeContext.Provider>
     </QueryClientProvider>

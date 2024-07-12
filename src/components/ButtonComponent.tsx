@@ -12,7 +12,7 @@ const ButtonComponent = ({onClick, text, ...rest}:ButtonComponentProps) => {
     const colors = tokens(theme.palette.mode)
 
     return (
-        <Button {...rest} onClick={onClick} sx={{backgroundColor:colors.blueAccent[700], color:colors.primary[100], height: '50px', width: '100%'}}>
+        <Button onClick={onClick} sx={{backgroundColor:colors.blueAccent[700], color:colors.primary[100], height: '50px', width: '100%'}} {...rest}>
                 {text}
         </Button>
     )
