@@ -6,6 +6,9 @@ import TableView from "./pages/table";
 import Sidebar from "./pages/global/Sidebar";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Login from "./pages/auth/login";
+import { createContext, useContext, useEffect, useState } from "react";
+import getCookie from "./utils/getCookie";
+import { LoginProvider, useLogin } from "./utils/useLogin";
 
 
 const Application = () => (
@@ -20,6 +23,21 @@ const Application = () => (
   </div>
 )
 
+const AuthStage = () => {
+  const {isLogin, setLogin} = useLogin()
+
+  useEffect(()=> {
+    const cookie = getCookie('token')
+    if(cookie) setLogin(true)
+  },[])
+
+  return (
+    <>
+      {isLogin ? <Application/> : <Login/>}
+    </>
+  )
+}
+
 function App() {
 
   const {theme, colorMode} = useMode()
@@ -29,8 +47,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
-        <CssBaseline/>
-          <Login/>
+          <CssBaseline/>
+            <LoginProvider>
+              <AuthStage/>
+            </LoginProvider>
         </ThemeProvider>
       </ColorModeContext.Provider>
     </QueryClientProvider>

@@ -2,11 +2,12 @@ import { Box, Typography, useTheme } from "@mui/material"
 import { tokens } from "../../theme"
 import SearchInput from "../../components/SearchInput"
 import ButtonComponent from "../../components/ButtonComponent"
-import { useState } from "react"
+import { Dispatch, SetStateAction, useContext, useState } from "react"
 import { useMutation } from "react-query"
 import AuthUseCase from "../../domain/usecase/auth"
 import AuthAPI from "../../domain/api/auth"
 import { AuthModel } from "../../domain/models/auth"
+import { useLogin } from "../../utils/useLogin"
 
 const Login = () => {
 
@@ -16,12 +17,14 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const auth = new AuthUseCase(new AuthAPI)
-
+    const {isLogin, setLogin} = useLogin()
 
     const {mutate:login, status} = useMutation({
         mutationFn: (data:AuthModel.Request.AuthData)=> auth.loginUser(data),
         onSuccess: (data) => {
-            console.log(data)
+            document.cookie = `token=${data.token}; path=/; max-age=${36000}`
+            // setLoggedIn(true)
+            setLogin(true)
         },
         onError: (data:any) => {
             setErrorMessage(data.message || 'Unknown Error')

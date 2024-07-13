@@ -8,6 +8,7 @@ export namespace AuthModel {
 
     export namespace Response {
         export interface AuthData {
+            token:string;
             message:string;
             success:boolean;
         }
