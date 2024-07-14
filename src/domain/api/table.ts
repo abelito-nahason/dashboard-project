@@ -1,44 +1,28 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { TableModel } from "../models/table";
 import TableRepo from "../repository/table";
-
-
+import getCookie from "../../utils/getCookie";
 
 
 export default class TableAPI implements TableRepo {
-    async getData({limit,page,univCountry,univName}: TableModel.Request.TableData): Promise<TableModel.Response.TableData> {
-        const url = 'http://universities.hipolabs.com/search' 
-        const offset = limit * (page)
+    readonly token = getCookie('token')
+
+    async getData({pageNumber, pageSize, productName, productVendor}: TableModel.Request.TableData): Promise<TableModel.Response.TableData> {
+        const url = process.env.REACT_APP_API!
         try {
-            const urlSearchParams = new URL(url)
-            urlSearchParams.searchParams.append('name', univName)
-            urlSearchParams.searchParams.append('country', univCountry)
-            urlSearchParams.searchParams.append('limit', limit.toString())
-            urlSearchParams.searchParams.append('offset', offset.toString())
+            const urlSearchParams = new URL(`${url}/product`)
+            urlSearchParams.searchParams.append('pageNumber', (pageNumber + 1).toString())
+            urlSearchParams.searchParams.append('pageSize', pageSize.toString())
+            urlSearchParams.searchParams.append('productName', productName.toString())
+            urlSearchParams.searchParams.append('productVendor', productVendor.toString())
             
-            const response = await axios.get(urlSearchParams.toString())
+            const response = await axios.get(urlSearchParams.toString(), {headers:{'x-token': this.token}})
             return response.data
 
         } catch (error:any) {
             console.error(error)
-            throw new Error(error || 'Unknown Error')
+            throw new AxiosError(error.response.data.message || 'Unknown Error')
         }
     }
 
-    async getTotalData({univCountry,univName}: TableModel.Request.TableTotalData): Promise<number> {
-        const url = 'http://universities.hipolabs.com/search' 
-        try {
-            const urlSearchParams = new URL(url)
-            urlSearchParams.searchParams.append('name', univName)
-            urlSearchParams.searchParams.append('country', univCountry)
-            
-            const response = await axios.get(urlSearchParams.toString())
-            return response.data.length
-
-            
-        } catch (error:any) {
-            console.error(error)
-            throw new Error(error || 'Unknown Error')
-        }
-    }
 }

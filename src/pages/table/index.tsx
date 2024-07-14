@@ -1,10 +1,10 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { GridColDef } from "@mui/x-data-grid"
 import { tokens } from "../../theme"
-import { Box, Button, CircularProgress, IconButton, InputBase, Modal, Typography, useTheme } from "@mui/material"
+import { Box, Button, Typography, useTheme } from "@mui/material"
 import Header from "../../components/Header"
-import { useEffect, useState } from "react"
-import { useMutation, useQuery } from "react-query"
-import { FilterAlt, SearchOutlined } from "@mui/icons-material"
+import { useState } from "react"
+import { useQuery } from "react-query"
+import { FilterAlt} from "@mui/icons-material"
 import SearchInput from "../../components/SearchInput"
 import PresetModal from "../../components/PresetModal"
 import ButtonComponent from "../../components/ButtonComponent"
@@ -24,61 +24,53 @@ const TableView = () => {
     })
 
     const [nameSearch, setNameSearch] = useState('')
-    const [countrySearch,setCountrySearch] = useState('')
+    const [vendorSearch,setVendorSearch] = useState('')
     const [openModal, setOpenModal] = useState(false)
-
-    const refetchData = () => {
-        refetch()
-        refetchTotal()
-    }
 
     const clearFilter = () => {
         setNameSearch('')
-        setCountrySearch('')
+        setVendorSearch('')
     }
 
     const applyFilter = () => {
         setOpenModal(false)
-        refetchData()
+        refetch()
     }
 
     const columns:GridColDef[] = [
         {
-            field: 'name',
-            headerName: 'Name',
+            field: 'id'
+        },
+        {
+            field: 'productName',
+            headerName: 'Product Name',
             flex: 1
         },
         {
-            field: 'country',
-            headerName: 'Country',
+            field: 'productVendor',
+            headerName: 'Product Vendor',
             flex: 1
         },
         {
-            field: 'domain',
-            headerName: 'Domain',
-            flex: 1,
-            renderCell: (params) => {
-                return params.row.domains[0]
-            }
-        }
+            field: 'productPrice',
+            headerName: 'Product Price',
+            flex: 1
+        },
     ]
 
-    const {data:totalInstances, isFetching, refetch:refetchTotal} = useQuery({
-        queryKey: ['totalData'],
-        queryFn: ()=> tableData.getTotalData({
-            univName: nameSearch,
-            univCountry: countrySearch
-        }),
-        initialData: 0,
-        refetchOnWindowFocus: false,
-    })
-
-    const {data, refetch} = useQuery({
+    const {data, refetch, isFetching} = useQuery({
         queryKey: ['table', paginationModel.page, paginationModel.pageSize],
-        queryFn: ()=> tableData.getData({limit: paginationModel.pageSize, page: paginationModel.page, univName: nameSearch, univCountry: countrySearch}),
-        initialData: [],
-        keepPreviousData: false,
-        enabled: totalInstances !== 0
+        queryFn: ()=> tableData.getData({
+            pageSize: paginationModel.pageSize,
+            pageNumber: paginationModel.page,
+            productName: nameSearch,
+            productVendor: vendorSearch
+        }),
+        initialData: {
+            results: [],
+            totalRows: 0
+        },
+        keepPreviousData:true
     })
 
     return (
@@ -89,20 +81,20 @@ const TableView = () => {
                     <Typography variant="h2">Filter</Typography>
 
                     <Box>
-                        <Typography variant="body1">Univesity Name</Typography>
+                        <Typography variant="body1">Product Name</Typography>
                         <SearchInput
                             value={nameSearch}
                             onChange={setNameSearch}
-                            text="University Name"
+                            text="Product Name"
                         />
                     </Box>
 
                     <Box>
-                        <Typography variant="body1">Country</Typography>
+                        <Typography variant="body1">Produt Vendor</Typography>
                         <SearchInput
-                            value={countrySearch}
-                            onChange={setCountrySearch}
-                            text="Country"
+                            value={vendorSearch}
+                            onChange={setVendorSearch}
+                            text="Product Vendor"
                         />
                     </Box>
 
@@ -118,7 +110,7 @@ const TableView = () => {
 
 
             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems:'center'}}>
-                <Header title="University Table View" subTitle="Information about universities worldwide" />
+                <Header title="Product Table View" subTitle="Information about available products" />
 
                 <Button onClick={()=> setOpenModal(true)} sx={{backgroundColor:colors.blueAccent[700], height: '50px', width: '100px'}} variant="contained" endIcon={<FilterAlt/>}>Filter</Button>
 
@@ -145,10 +137,9 @@ const TableView = () => {
                     }
                 }}
             >
-                <DataTable getRowId={(row)=> row.name} 
-                          rowCount={totalInstances} 
+                <DataTable rowCount={data?.totalRows} 
                           paginationMode="server" 
-                          rows={data}
+                          rows={data?.results || []}
                           loading={isFetching}
                           paginationModel={paginationModel} 
                           onPaginationModelChange={setPaginationModel}

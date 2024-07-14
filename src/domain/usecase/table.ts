@@ -11,8 +11,4 @@ export default class TableUseCase implements TableRepo {
         return this.repo.getData(data)
     }
 
-    async getTotalData(data: TableModel.Request.TableTotalData): Promise<number> {
-        return this.repo.getTotalData(data)
-    }
-
 }

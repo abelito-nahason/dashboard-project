@@ -12,6 +12,9 @@ const DataTable = (data:DataGridProps) => {
 
     return (
         <DataGrid
+        columnVisibilityModel={{
+            id:false
+        }}
         slots={{
             loadingOverlay: ()=> (<Box sx={{display: 'flex', height:'100%', justifyContent:'center', alignItems:'center'}}><CircularProgress sx={{color:colors.blueAccent[700]}}/></Box>)
           }}

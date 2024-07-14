@@ -1,24 +1,23 @@
 export namespace TableModel {
     export namespace Request {
         export interface TableData {
-            limit: number;
-            page: number;
-            univName:string;
-            univCountry:string;        
-        }
-
-        export interface TableTotalData extends Pick<TableData, 'univName' | 'univCountry'> {
-
+            pageSize:number;
+            pageNumber:number;
+            productName:string;
+            productVendor:string;        
         }
     }
 
     export namespace Response {
         export type TableData = {
-            name:string;
-            country:string;
-            domain:string[];
-        }[]
-
-        export type TotalTableData = number;
+            results: {
+                id:string;
+                productName:string;
+                productVendor:string;
+                productPrice:string;
+                created_at:string;
+            }[]
+            totalRows:number;   
+        }
     }
 }
