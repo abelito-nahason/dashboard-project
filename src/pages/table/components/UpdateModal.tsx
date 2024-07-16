@@ -1,52 +1,50 @@
-import { Box, Typography } from "@mui/material"
-import PresetModal from "../../../components/PresetModal"
-import { BaseModalProps } from "./FilterModal"
-import ButtonComponent from "../../../components/ButtonComponent"
-import { TableModel } from "../../../domain/models/table"
-import { AxiosError } from "axios"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import FormInput from "../../../components/FormInput"
-import { useMutation } from "react-query"
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import PresetModal from "../../../components/PresetModal";
 import TableUseCase from "../../../domain/usecase/table"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { BaseModalProps } from "./FilterModal";
+import { TableModel } from "../../../domain/models/table";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Box, Typography } from "@mui/material";
+import FormInput from "../../../components/FormInput";
+import ButtonComponent from "../../../components/ButtonComponent";
+import { useMutation } from "react-query";
+import { AxiosError } from "axios";
 
 
-type AddModalProps = {
-    tableUseCase:TableUseCase;
+type UpdateModalProps = {
+    tableUseCase:TableUseCase
     refetch: ()=> void;
+    defaultValues: {
+        productId:string;
+        productName:string;
+        productPrice:string;
+        productVendor:string;
+    }
 } & BaseModalProps
 
+const UpdateModal = ({openModal, setOpenModal, tableUseCase, refetch, defaultValues}:UpdateModalProps) => {
 
-const AddModal = ({openModal, setOpenModal, tableUseCase, refetch}:AddModalProps) => {
-
-    const {control, 
-           handleSubmit, 
-           resetField,
-           formState: {errors}
-        } = useForm<TableModel.Request.AddData>({
-        defaultValues: {
-            productName: '',
-            productVendor: '',
-            productPrice: ''
-        },
-        resolver: yupResolver(TableModel.Request.addDataSchema)
+    const {control, handleSubmit, formState:{errors}, resetField} = useForm<TableModel.Request.UpdateData>({
+        values: defaultValues,
+        resolver: yupResolver(TableModel.Request.updateDataSchema)
     })
 
-    const {mutate:addData, isLoading:loading, error} = useMutation({
-        mutationFn: (data:TableModel.Request.AddData) => tableUseCase.addData(data),
-        onSuccess: ()=> {
-            refetch()
+    const {mutate, error, isLoading:loading} = useMutation({
+        mutationFn: (data:TableModel.Request.UpdateData) => tableUseCase.updateData(data),
+        onSuccess: () => {
             closeForm()
+            refetch()
         }
     })
-    let axiosError = error as AxiosError
-    
 
-    const formSubmit:SubmitHandler<TableModel.Request.AddData> = (data) => {
-        addData(data)
+    let axiosError = error as AxiosError
+
+    const formSubmit:SubmitHandler<TableModel.Request.UpdateData> = (data) => {
+        mutate(data)
     }
 
     const closeForm = () => {
+        resetField("productId")
         resetField("productName")
         resetField("productVendor")
         resetField("productPrice")
@@ -56,10 +54,10 @@ const AddModal = ({openModal, setOpenModal, tableUseCase, refetch}:AddModalProps
 
 
     return (
-        <PresetModal open={openModal === 'add'} onClose={closeForm}>
-       <form onSubmit={handleSubmit(formSubmit)}>
+        <PresetModal open={openModal === 'update'} onClose={closeForm}>
+        <form onSubmit={handleSubmit(formSubmit)}>
             <Box sx={{display: 'flex', flexDirection:'column', gap:4}}>
-                <Typography variant="h2">Add Product</Typography>
+                <Typography variant="h2">Update Product</Typography>
 
                 <Box>
                     <Typography variant="body1">Product Name</Typography>
@@ -114,9 +112,10 @@ const AddModal = ({openModal, setOpenModal, tableUseCase, refetch}:AddModalProps
                 </Box>
 
             </Box>
-        </form> 
-    </PresetModal>
+        </form>
+        </PresetModal>
     )
+
 }
 
-export default AddModal
+export default UpdateModal

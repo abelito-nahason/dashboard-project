@@ -1,23 +1,23 @@
 import { GridColDef } from "@mui/x-data-grid"
 import { tokens } from "../../theme"
-import { Box, Button, useTheme } from "@mui/material"
+import { Box, Button, IconButton, useTheme } from "@mui/material"
 import Header from "../../components/Header"
 import { useState } from "react"
-import { useMutation, useQuery } from "react-query"
-import { Add, FilterAlt} from "@mui/icons-material"
+import { useQuery } from "react-query"
+import { Add, Edit, FilterAlt} from "@mui/icons-material"
 import DataTable from "../../components/DataTable"
 import TableUseCase from "../../domain/usecase/table"
 import TableAPI from "../../domain/api/table"
 import FilterModal from "./components/FilterModal"
 import AddModal from "./components/AddModal"
+import UpdateModal from "./components/UpdateModal"
 import { TableModel } from "../../domain/models/table"
-import { AxiosError } from "axios"
 
 
 const TableView = () => {
     const theme = useTheme()
     const colors = tokens(theme.palette.mode)
-    const tableData = new TableUseCase(new TableAPI)
+    const tableData = new TableUseCase(new TableAPI())
 
     const [paginationModel, setPaginationModel] = useState({
         pageSize: 10,
@@ -27,6 +27,12 @@ const TableView = () => {
     const [nameSearch, setNameSearch] = useState('')
     const [vendorSearch,setVendorSearch] = useState('')
     const [openModal, setOpenModal] = useState<string>('')
+    const [updateValues, setUpdateValues] = useState<TableModel.Request.UpdateData>({
+        productId: '',
+        productName: '',
+        productPrice: '',
+        productVendor: ''
+    })
 
     const clearFilter = () => {
         setNameSearch('')
@@ -43,6 +49,16 @@ const TableView = () => {
             field: 'id'
         },
         {
+            field: 'created_at',
+            headerName: 'Created At',
+            flex: 1
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Updated At',
+            flex: 1
+        },
+        {
             field: 'productName',
             headerName: 'Product Name',
             flex: 1
@@ -57,6 +73,27 @@ const TableView = () => {
             headerName: 'Product Price',
             flex: 1
         },
+        {
+            field: 'action',
+            headerName: '',
+            flex: 1,
+            maxWidth: 150,
+            renderCell: (fields) => (
+            <Box>
+                <IconButton
+                    onClick={()=> {
+                        setUpdateValues({
+                            productId: fields.row.id,
+                            productName: fields.row.productName,
+                            productPrice: fields.row.productPrice,
+                            productVendor: fields.row.productVendor
+                        })
+                        setOpenModal('update')
+                    }}
+                ><Edit/></IconButton>
+            </Box>
+            )
+        }
     ]
 
     const {data, refetch, isFetching} = useQuery({
@@ -93,6 +130,14 @@ const TableView = () => {
                 setOpenModal={setOpenModal}
                 tableUseCase={tableData}
                 refetch={refetch}
+            />
+
+            <UpdateModal
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                tableUseCase={tableData}
+                refetch={refetch}
+                defaultValues={updateValues}
             />
 
             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems:'center'}}>

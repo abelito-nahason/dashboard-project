@@ -36,4 +36,15 @@ export default class TableAPI implements TableRepo {
         }
     }
 
+    async updateData(data: TableModel.Request.UpdateData): Promise<TableModel.Response.GenericActionResponse> {
+        try {
+            const url = new URL(`${this.url}/product`)
+            const response = await axios.put(url.toString(), data, {headers: {'x-token': this.token}})
+            return response.data
+        } catch (error: any) {
+            console.error(error)
+            throw new AxiosError(error.response.data.message || "Unknown Error")            
+        }
+    }
+
 }
