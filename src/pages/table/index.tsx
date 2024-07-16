@@ -1,16 +1,17 @@
 import { GridColDef } from "@mui/x-data-grid"
 import { tokens } from "../../theme"
-import { Box, Button, Typography, useTheme } from "@mui/material"
+import { Box, Button, useTheme } from "@mui/material"
 import Header from "../../components/Header"
 import { useState } from "react"
-import { useQuery } from "react-query"
-import { FilterAlt} from "@mui/icons-material"
-import SearchInput from "../../components/SearchInput"
-import PresetModal from "../../components/PresetModal"
-import ButtonComponent from "../../components/ButtonComponent"
+import { useMutation, useQuery } from "react-query"
+import { Add, FilterAlt} from "@mui/icons-material"
 import DataTable from "../../components/DataTable"
 import TableUseCase from "../../domain/usecase/table"
 import TableAPI from "../../domain/api/table"
+import FilterModal from "./components/FilterModal"
+import AddModal from "./components/AddModal"
+import { TableModel } from "../../domain/models/table"
+import { AxiosError } from "axios"
 
 
 const TableView = () => {
@@ -25,7 +26,7 @@ const TableView = () => {
 
     const [nameSearch, setNameSearch] = useState('')
     const [vendorSearch,setVendorSearch] = useState('')
-    const [openModal, setOpenModal] = useState(false)
+    const [openModal, setOpenModal] = useState<string>('')
 
     const clearFilter = () => {
         setNameSearch('')
@@ -33,7 +34,7 @@ const TableView = () => {
     }
 
     const applyFilter = () => {
-        setOpenModal(false)
+        setOpenModal('')
         refetch()
     }
 
@@ -76,43 +77,30 @@ const TableView = () => {
     return (
         <Box sx={{p:4, position: 'relative'}}>
 
-            <PresetModal open={openModal} onClose={()=>setOpenModal(false)}>
-                <Box sx={{display: 'flex', flexDirection:'column', gap:4}}>
-                    <Typography variant="h2">Filter</Typography>
+            <FilterModal
+                vendorSearch={vendorSearch}
+                setVendorSearch={setVendorSearch}
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                nameSearch={nameSearch}
+                setNameSearch={setNameSearch}
+                applyFilter={applyFilter}
+                clearFilter={clearFilter}
+            />
 
-                    <Box>
-                        <Typography variant="body1">Product Name</Typography>
-                        <SearchInput
-                            value={nameSearch}
-                            onChange={setNameSearch}
-                            text="Product Name"
-                        />
-                    </Box>
-
-                    <Box>
-                        <Typography variant="body1">Produt Vendor</Typography>
-                        <SearchInput
-                            value={vendorSearch}
-                            onChange={setVendorSearch}
-                            text="Product Vendor"
-                        />
-                    </Box>
-
-                    <Box sx={{display:'flex', gap:2}}>
-                        <ButtonComponent onClick={clearFilter} text="Clear Filter"/>
-                        <ButtonComponent onClick={applyFilter} text="Apply"/>
-                    </Box>
-
-                    {/* <IconButton onClick={()=> {refetch(); refetchTotal()}}><SearchOutlined/></IconButton> */}
-
-                </Box>
-            </PresetModal>
-
+            <AddModal
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                tableUseCase={tableData}
+                refetch={refetch}
+            />
 
             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems:'center'}}>
                 <Header title="Product Table View" subTitle="Information about available products" />
-
-                <Button onClick={()=> setOpenModal(true)} sx={{backgroundColor:colors.blueAccent[700], height: '50px', width: '100px'}} variant="contained" endIcon={<FilterAlt/>}>Filter</Button>
+                <Box sx={{display:'flex', gap:2}}>
+                    <Button onClick={()=> setOpenModal('filter')} sx={{backgroundColor:colors.blueAccent[700], height: '50px', width: '100px'}} variant="contained" endIcon={<FilterAlt/>}>Filter</Button>
+                    <Button onClick={()=> setOpenModal('add')} sx={{backgroundColor:colors.blueAccent[700], height: '50px', width: '100px'}} variant="contained" endIcon={<Add/>}>Add</Button>
+                </Box>
 
             </Box>
             <Box
@@ -151,5 +139,6 @@ const TableView = () => {
 
 }
 
+// form validation, loading btn, update, delete
 
 export default TableView

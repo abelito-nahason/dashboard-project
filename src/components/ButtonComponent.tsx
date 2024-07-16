@@ -1,9 +1,9 @@
-import { Button, ButtonProps, Typography, useTheme } from "@mui/material"
+import { Button, ButtonProps, useTheme } from "@mui/material"
 import { tokens } from "../theme"
 
 
 type ButtonComponentProps = {
-    onClick: ()=> void;
+    onClick?: ()=> void;
     text:string;
 } & ButtonProps
 

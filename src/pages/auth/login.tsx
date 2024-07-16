@@ -48,7 +48,7 @@ const Login = () => {
                   alignItems:'center',
                   p:'16px',
                   gap:'8px'
-                  }}>
+                }}>
             <Typography variant="h1" sx={{textAlign:'center', mb:'16px'}}>Login</Typography>
                 <Box sx={{width: '75%'}}>
                     <Typography variant="body1">Username</Typography>
@@ -56,7 +56,7 @@ const Login = () => {
                         value={username}
                         onChange={setUsername}
                         text="Username"
-                    />
+                        />
                 </Box>
 
                 <Box sx={{width: '75%', mb:'8px'}}>
@@ -66,14 +66,19 @@ const Login = () => {
                         onChange={setPassword}
                         text="Password"
                         password
-                    />
+                        onKeyDown={(e)=> (
+                            e.key === 'Enter' ? login({username,password}) : null
+                        )}
+                        />
                 </Box>
 
                 { status === 'error' && <Typography>{`Login Error: ${errorMessage}`}</Typography>}
                 
                 <ButtonComponent sx={{backgroundColor:colors.blueAccent[700], color:colors.primary[100], width: '75%', height: '50px'}} 
                                  onClick={()=>login({username, password})} 
-                                 text="Login"/>                  
+                                 text="Login"
+                                 type="submit"
+                                 />                  
         </Box>
       </div>)
     }

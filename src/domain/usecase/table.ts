@@ -11,4 +11,8 @@ export default class TableUseCase implements TableRepo {
         return this.repo.getData(data)
     }
 
+    async addData(data: TableModel.Request.AddData): Promise<TableModel.Response.GenericActionResponse> {
+        return this.repo.addData(data)
+    }
+
 }
