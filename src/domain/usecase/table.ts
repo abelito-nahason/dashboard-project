@@ -19,4 +19,8 @@ export default class TableUseCase implements TableRepo {
         return this.repo.updateData(data)
     }
 
+    async deleteData(data: TableModel.Request.DeleteData): Promise<TableModel.Response.GenericActionResponse> {
+        return this.repo.deleteData(data)
+    }
+
 }

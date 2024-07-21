@@ -47,4 +47,15 @@ export default class TableAPI implements TableRepo {
         }
     }
 
+    async deleteData(data: TableModel.Request.DeleteData): Promise<TableModel.Response.GenericActionResponse> {
+        try {
+            const url = new URL(`${this.url}/deleteProduct`)
+            const response = await axios.post(url.toString(), data, {headers: {'x-token': this.token}})
+            return response.data
+        } catch (error:any) {
+            console.error(error)
+            throw new AxiosError(error.response.data.message || 'Unknown Error')
+        }
+    }
+
 }

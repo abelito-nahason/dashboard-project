@@ -1,17 +1,46 @@
-import { GridColDef } from "@mui/x-data-grid"
 import { tokens } from "../../theme"
 import { Box, Button, IconButton, useTheme } from "@mui/material"
 import Header from "../../components/Header"
-import { useState } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 import { useQuery } from "react-query"
-import { Add, Edit, FilterAlt} from "@mui/icons-material"
-import DataTable from "../../components/DataTable"
+import { Add, Delete, Edit, FilterAlt} from "@mui/icons-material"
+import DataTable, { GridColDefMobile } from "../../components/DataTable"
 import TableUseCase from "../../domain/usecase/table"
 import TableAPI from "../../domain/api/table"
 import FilterModal from "./components/FilterModal"
 import AddModal from "./components/AddModal"
 import UpdateModal from "./components/UpdateModal"
 import { TableModel } from "../../domain/models/table"
+import DeleteModal from "./components/DeleteModal"
+import PageHeader from "../../components/PageHeader"
+
+
+type ActionCellRenderProps = {
+    setUpdateValues: Dispatch<SetStateAction<TableModel.Request.UpdateData>>;
+    updateValues: TableModel.Request.UpdateData;
+    setOpenModal: Dispatch<SetStateAction<string>>
+    setProductIdDelete: Dispatch<SetStateAction<string>>
+    deleteValue:string;
+}
+
+
+const ActionCellRender = ({setUpdateValues, setOpenModal, setProductIdDelete, updateValues, deleteValue}:ActionCellRenderProps) => {
+    return (
+        <>
+        <IconButton
+            onClick={()=> {
+                setUpdateValues(updateValues)
+                setOpenModal('update')
+            }}
+        ><Edit/></IconButton>
+        <IconButton onClick={()=> {
+            setOpenModal('delete')
+            setProductIdDelete(deleteValue)
+        }}><Delete/></IconButton>
+
+    </>
+    )
+}
 
 
 const TableView = () => {
@@ -26,13 +55,14 @@ const TableView = () => {
 
     const [nameSearch, setNameSearch] = useState('')
     const [vendorSearch,setVendorSearch] = useState('')
-    const [openModal, setOpenModal] = useState<string>('')
+    const [openModal, setOpenModal] = useState('')
     const [updateValues, setUpdateValues] = useState<TableModel.Request.UpdateData>({
         productId: '',
         productName: '',
         productPrice: '',
         productVendor: ''
     })
+    const [productIdDelete, setProductIdDelete] = useState('')
 
     const clearFilter = () => {
         setNameSearch('')
@@ -44,14 +74,14 @@ const TableView = () => {
         refetch()
     }
 
-    const columns:GridColDef[] = [
+    const columns:GridColDefMobile<any>[] = [
         {
             field: 'id'
         },
         {
             field: 'created_at',
             headerName: 'Created At',
-            flex: 1
+            flex: 1,
         },
         {
             field: 'updated_at',
@@ -78,21 +108,30 @@ const TableView = () => {
             headerName: '',
             flex: 1,
             maxWidth: 150,
-            renderCell: (fields) => (
-            <Box>
-                <IconButton
-                    onClick={()=> {
-                        setUpdateValues({
-                            productId: fields.row.id,
-                            productName: fields.row.productName,
-                            productPrice: fields.row.productPrice,
-                            productVendor: fields.row.productVendor
-                        })
-                        setOpenModal('update')
-                    }}
-                ><Edit/></IconButton>
-            </Box>
-            )
+            renderCell: (fields) => ActionCellRender({
+                setOpenModal,
+                setProductIdDelete,
+                setUpdateValues,
+                updateValues: {
+                    productId: fields.row.id,
+                    productName: fields.row.productName,
+                    productPrice: fields.row.productPrice,
+                    productVendor: fields.row.productVendor
+                },
+                deleteValue: fields.row.id
+            }),
+            renderMobile: ({id, productName, productPrice, productVendor}) => ActionCellRender({
+                setOpenModal,
+                setProductIdDelete,
+                setUpdateValues,
+                updateValues : {
+                    productId: id,
+                    productName,
+                    productPrice,
+                    productVendor
+                },
+                deleteValue: id
+            })
         }
     ]
 
@@ -112,7 +151,7 @@ const TableView = () => {
     })
 
     return (
-        <Box sx={{p:4, position: 'relative'}}>
+        <Box sx={{p:{xs:2, md:4}, position: 'relative'}}>
 
             <FilterModal
                 vendorSearch={vendorSearch}
@@ -140,19 +179,29 @@ const TableView = () => {
                 defaultValues={updateValues}
             />
 
-            <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems:'center'}}>
-                <Header title="Product Table View" subTitle="Information about available products" />
-                <Box sx={{display:'flex', gap:2}}>
-                    <Button onClick={()=> setOpenModal('filter')} sx={{backgroundColor:colors.blueAccent[700], height: '50px', width: '100px'}} variant="contained" endIcon={<FilterAlt/>}>Filter</Button>
-                    <Button onClick={()=> setOpenModal('add')} sx={{backgroundColor:colors.blueAccent[700], height: '50px', width: '100px'}} variant="contained" endIcon={<Add/>}>Add</Button>
-                </Box>
+            <DeleteModal
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                productId={productIdDelete}
+                refetch={refetch}
+                tableUseCase={tableData}
+            />
 
-            </Box>
+            <PageHeader>
+                <>
+                    <Header title="Product Table View" subTitle="Information about available products" />
+                    <Box sx={{display:'flex', gap:2}}>
+                        <Button onClick={()=> setOpenModal('filter')} sx={{backgroundColor:colors.blueAccent[700], height: '50px', width: '100px'}} variant="contained" endIcon={<FilterAlt/>}>Filter</Button>
+                        <Button onClick={()=> setOpenModal('add')} sx={{backgroundColor:colors.blueAccent[700], height: '50px', width: '100px'}} variant="contained" endIcon={<Add/>}>Add</Button>
+                    </Box>
+                </>
+            </PageHeader>
+
             <Box
                 m="40px 0 0 0"
-                height='75vh'
-                position='absolute'
-                width='97%'
+                height='100%'
+                position='relative'
+                width='100%'
                 sx={{
                     "& .MuiDataGrid-root": {
                         border: 'none',

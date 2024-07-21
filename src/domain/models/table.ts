@@ -29,6 +29,11 @@ export namespace TableModel {
         }
 
         export const updateDataSchema = addDataSchema.concat(object({productId:string().required()}))
+
+        export interface DeleteData {
+            productId:string;
+        }
+
     }
 
     export namespace Response {

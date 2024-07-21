@@ -6,22 +6,26 @@ import TableView from "./pages/table";
 import Sidebar from "./pages/global/Sidebar";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Login from "./pages/auth/login";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import getCookie from "./utils/getCookie";
 import { LoginProvider, useLogin } from "./utils/useLogin";
 
 
-const Application = () => (
-  <div className="app">
-    <Sidebar/>
-    <main className="content">
-      <Topbar/>
-      <Routes>
-          <Route path="/" element={<TableView/>}></Route>
-      </Routes>
-    </main>
-  </div>
-)
+const Application = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  return (
+    <div className="app">
+      <Sidebar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
+      <main className="content">
+        <Topbar setDrawerOpen={setDrawerOpen}/>
+        <Routes>
+            <Route path="/" element={<TableView/>}></Route>
+        </Routes>
+      </main>
+    </div>
+  )
+}
 
 const AuthStage = () => {
   const {isLogin, setLogin} = useLogin()

@@ -1,6 +1,5 @@
 import { ListItem, ListItemButton, ListItemIcon, ListItemText, SvgIconTypeMap } from "@mui/material"
 import { OverridableComponent } from "@mui/material/OverridableComponent";
-import { Navigate } from "react-router-dom";
 
 
 type ListItemProps = {
