@@ -1,6 +1,6 @@
-import { Box, Divider, IconButton, useMediaQuery, useTheme } from "@mui/material"
+import { Box, IconButton, useMediaQuery, useTheme } from "@mui/material"
 import { Dispatch, SetStateAction, useContext } from "react"
-import { ColorModeContext, tokens } from "../../theme"
+import { ColorModeContext } from "../../theme"
 import { LightModeOutlined, DarkModeOutlined, Logout, Menu } from "@mui/icons-material"
 import { useLogin } from "../../utils/useLogin"
 
@@ -11,7 +11,6 @@ type TopbarProps = {
 
 const Topbar = ({setDrawerOpen}:TopbarProps) => {
     const theme = useTheme()
-    const colors = tokens(theme.palette.mode)
     const colorMode = useContext(ColorModeContext)
     const {logout} = useLogin()
     const mobile = useMediaQuery(theme.breakpoints.down('md'))
