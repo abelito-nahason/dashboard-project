@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo, useContext } from "react";
+import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
 import { PaletteMode } from "@mui/material";
 

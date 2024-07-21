@@ -2,7 +2,7 @@ import { Box, Typography, useTheme } from "@mui/material"
 import { tokens } from "../../theme"
 import SearchInput from "../../components/SearchInput"
 import ButtonComponent from "../../components/ButtonComponent"
-import { Dispatch, SetStateAction, useContext, useState } from "react"
+import { useState } from "react"
 import { useMutation } from "react-query"
 import AuthUseCase from "../../domain/usecase/auth"
 import AuthAPI from "../../domain/api/auth"
@@ -16,14 +16,13 @@ const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-    const auth = new AuthUseCase(new AuthAPI)
-    const {isLogin, setLogin} = useLogin()
+    const auth = new AuthUseCase(new AuthAPI())
+    const {setLogin} = useLogin()
 
     const {mutate:login, status} = useMutation({
         mutationFn: (data:AuthModel.Request.AuthData)=> auth.loginUser(data),
         onSuccess: (data) => {
             document.cookie = `token=${data.token}; path=/; max-age=${36000}`
-            // setLoggedIn(true)
             setLogin(true)
         },
         onError: (data:any) => {

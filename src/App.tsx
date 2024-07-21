@@ -33,7 +33,7 @@ const AuthStage = () => {
   useEffect(()=> {
     const cookie = getCookie('token')
     if(cookie) setLogin(true)
-  },[])
+  })
 
   return (
     <>

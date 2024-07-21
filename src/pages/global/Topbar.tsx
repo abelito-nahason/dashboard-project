@@ -1,7 +1,7 @@
 import { Box, Divider, IconButton, useMediaQuery, useTheme } from "@mui/material"
 import { Dispatch, SetStateAction, useContext } from "react"
 import { ColorModeContext, tokens } from "../../theme"
-import { LightModeOutlined, DarkModeOutlined, NotificationsOutlined, SettingsOutlined, PersonOutline, Logout, Menu } from "@mui/icons-material"
+import { LightModeOutlined, DarkModeOutlined, Logout, Menu } from "@mui/icons-material"
 import { useLogin } from "../../utils/useLogin"
 
 

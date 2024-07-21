@@ -64,7 +64,6 @@ const Sidebar = ({drawerOpen: open, setDrawerOpen: setOpen}:SidebarProps) => {
     
     const theme = useTheme()
     const colors = tokens(theme.palette.mode)
-    const [selected, setSelected] = useState('TableView')
     const navigate = useNavigate()
     const mobile = useMediaQuery(theme.breakpoints.down('md'))
 
