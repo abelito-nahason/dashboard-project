@@ -57,6 +57,11 @@ const MobilePagination = ({data, paginationModelChange, prevPage, nextPage, maxP
     )
 }
 
+const LoadingOverlay = () => (
+    <Box sx={{display: 'flex', height:'100%', width:'100%', justifyContent:'center', alignItems:'end'}}>
+                <LinearProgress color="success" sx={{width:'100%'}} />
+    </Box>
+)
 
 const DataTable = (data:DataGridPropsMobile) => {
 
@@ -123,23 +128,22 @@ const DataTable = (data:DataGridPropsMobile) => {
             id:false
         }}
         slots={{
-            loadingOverlay: ()=> (<Box sx={{display: 'flex', height:'100%', width:'100%', justifyContent:'center', alignItems:'end'}}>
-                <LinearProgress color="success" sx={{width:'100%'}} />
-            </Box>)
-          }}
-          sx={{ border:'none',
-            "& .MuiDataGrid-cell": {
-                borderBottom: 'none'
-            },
-            "& .MuiDataGrid-columnHeader": {
-                backgroundColor: colors.blueAccent[700],
-                borderBottom: 'none'
-            },
-            "& .MuiDataGrid-footerContainer": {
-                borderTop: 'none',
-                backgroundColor: colors.blueAccent[700]
-            }
+            loadingOverlay: ()=> (<LoadingOverlay/>)
         }}
+        sx={{ border:'none',
+              height:"calc(100vh - 250px)",
+        "--DataGrid-overlayHeight": '500px',
+        "& .MuiDataGrid-cell": {
+            borderBottom: 'none'
+        },
+        "& .MuiDataGrid-columnHeader": {
+            backgroundColor: colors.blueAccent[700],
+            borderBottom: 'none'
+        },
+        "& .MuiDataGrid-footerContainer": {
+            borderTop: 'none',
+            backgroundColor: colors.blueAccent[700]
+        }}}
         {...data}
         />
     )

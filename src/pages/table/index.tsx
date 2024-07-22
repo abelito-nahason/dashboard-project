@@ -151,7 +151,7 @@ const TableView = () => {
     })
 
     return (
-        <Box sx={{p:{xs:2, md:4}, position: 'relative'}}>
+        <Box sx={{p:{xs:2, md:4}, position: 'relative', display:'flex', flexDirection:'column'}}>
 
             <FilterModal
                 vendorSearch={vendorSearch}
@@ -198,10 +198,7 @@ const TableView = () => {
             </PageHeader>
 
             <Box
-                m="40px 0 0 0"
-                height='100%'
-                position='relative'
-                width='100%'
+                sx={{pt: 2}}
             >
                 <DataTable rowCount={data?.totalRows} 
                           paginationMode="server" 

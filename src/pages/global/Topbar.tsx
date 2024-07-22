@@ -16,7 +16,7 @@ const Topbar = ({setDrawerOpen}:TopbarProps) => {
     const mobile = useMediaQuery(theme.breakpoints.down('md'))
 
     return (
-        <Box sx={{display:'flex', justifyContent: 'space-between', p: 2}}>
+        <Box sx={{display:'flex', justifyContent: 'space-between', p: 2, height:'75px'}}>
             <Box>
                 {mobile && <IconButton onClick={()=> setDrawerOpen(true)}><Menu/></IconButton>}
             </Box>
