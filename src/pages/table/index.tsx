@@ -202,22 +202,6 @@ const TableView = () => {
                 height='100%'
                 position='relative'
                 width='100%'
-                sx={{
-                    "& .MuiDataGrid-root": {
-                        border: 'none',
-                    },
-                    "& .MuiDataGrid-cell": {
-                        borderBottom: 'none'
-                    },
-                    "& .MuiDataGrid-columnHeader": {
-                        backgroundColor: colors.blueAccent[700],
-                        borderBottom: 'none'
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                        borderTop: 'none',
-                        backgroundColor: colors.blueAccent[700]
-                    }
-                }}
             >
                 <DataTable rowCount={data?.totalRows} 
                           paginationMode="server" 

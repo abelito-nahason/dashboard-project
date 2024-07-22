@@ -75,8 +75,6 @@ const Sidebar = ({drawerOpen: open, setDrawerOpen: setOpen}:SidebarProps) => {
       setOpen(false);
     };
 
-    console.log(colors.primary[700])
-
     if(mobile) return (
       <Drawer PaperProps={{sx:{backgroundColor: colors.primary[700]}}} variant="temporary" open={open}>
         <DrawerHeader sx={{justifyContent: "end"}}>

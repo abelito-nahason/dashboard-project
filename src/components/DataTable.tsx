@@ -1,4 +1,4 @@
-import { Box, CircularProgress, IconButton, Paper, TextField, Typography, useMediaQuery, useTheme } from "@mui/material"
+import { Box, IconButton, LinearProgress, Paper, TextField, Typography, useMediaQuery, useTheme } from "@mui/material"
 import { DataGrid, DataGridProps, GridColDef, GridPaginationModel } from "@mui/x-data-grid"
 import { tokens } from "../theme"
 import { ReactNode } from "react"
@@ -123,8 +123,23 @@ const DataTable = (data:DataGridPropsMobile) => {
             id:false
         }}
         slots={{
-            loadingOverlay: ()=> (<Box sx={{display: 'flex', height:'100%', justifyContent:'center', alignItems:'center'}}><CircularProgress sx={{color:colors.blueAccent[700]}}/></Box>)
+            loadingOverlay: ()=> (<Box sx={{display: 'flex', height:'100%', width:'100%', justifyContent:'center', alignItems:'end'}}>
+                <LinearProgress color="success" sx={{width:'100%'}} />
+            </Box>)
           }}
+          sx={{ border:'none',
+            "& .MuiDataGrid-cell": {
+                borderBottom: 'none'
+            },
+            "& .MuiDataGrid-columnHeader": {
+                backgroundColor: colors.blueAccent[700],
+                borderBottom: 'none'
+            },
+            "& .MuiDataGrid-footerContainer": {
+                borderTop: 'none',
+                backgroundColor: colors.blueAccent[700]
+            }
+        }}
         {...data}
         />
     )
